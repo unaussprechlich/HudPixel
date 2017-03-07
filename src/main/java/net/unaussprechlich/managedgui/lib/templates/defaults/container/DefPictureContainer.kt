@@ -8,43 +8,41 @@
 
 package net.unaussprechlich.managedgui.lib.templates.defaults.container
 
+import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.event.ClientChatReceivedEvent
 import net.minecraftforge.client.event.GuiOpenEvent
 import net.unaussprechlich.managedgui.lib.container.Container
 import net.unaussprechlich.managedgui.lib.event.util.Event
 import net.unaussprechlich.managedgui.lib.handler.MouseHandler
 import net.unaussprechlich.managedgui.lib.util.EnumEventState
-import net.unaussprechlich.managedgui.lib.util.FontUtil
+import net.unaussprechlich.managedgui.lib.util.RGBA
+import net.unaussprechlich.managedgui.lib.util.RenderUtils
 
 /**
- * DefTextContainer Created by unaussprechlich on 20.12.2016.
+ * DefPictureContainer Created by Alexander on 27.02.2017.
  * Description:
  */
-class DefTextContainer(text: String) : Container() {
+class DefPictureContainer : Container {
 
-    operator fun plusAssign(char: Char) {
-        text += char
-    }
-    var text = ""
-        set(text) {
-            field = text
-            super.setWidth(FontUtil.getStringWidth(text))
-            super.setHeight(9)
-        }
-    var isShadow = false
+    private val resourceLocation: ResourceLocation?
+    private var textureHeight = 0
+    private var textuewWidth = 0
 
-    init {
-        this.text = text
-        super.setWidth(FontUtil.getStringWidth(text))
-        super.setHeight(9)
+
+    constructor(width: Int, height: Int, resourceLocation: ResourceLocation) {
+        this.resourceLocation = resourceLocation
+        setWidth(width)
+        setHeight(height)
     }
 
-    override fun setWidth(width: Int) {
-        throw UnsupportedOperationException("[ManagedGuiLib][DefTextContainer] setWidth() is handled automatically use setPadding() instead!")
+    constructor(resourceLocation: ResourceLocation) {
+        this.resourceLocation = resourceLocation
     }
 
-    override fun setHeight(width: Int) {
-        throw UnsupportedOperationException("[ManagedGuiLib][DefTextContainer] setHeight() is handled automatically use setPadding() instead!")
+    constructor() {
+        this.resourceLocation = null
+
     }
 
     override fun doClientTickLocal(): Boolean {
@@ -52,8 +50,16 @@ class DefTextContainer(text: String) : Container() {
     }
 
     override fun doRenderTickLocal(xStart: Int, yStart: Int, width: Int, height: Int, ees: EnumEventState): Boolean {
-        if (ees === EnumEventState.PRE) {
-            FontUtil.draw(this.text, xStart, yStart)
+        if (ees == EnumEventState.POST) {
+            if (resourceLocation == null) {
+                RenderUtils.renderBoxWithColor(xStart, yStart, width, height, RGBA.RED.get())
+                RenderUtils.iconRender_loadingBar(xStart + width / 2 - 5, yStart + height / 2 - 3)
+            } else {
+                GlStateManager.enableBlend()
+                RenderUtils.texture_modularRect(xStart , yStart, getWidth(), getHeight(), 0, 0, getWidth(), getHeight(), resourceLocation, 1f)
+                GlStateManager.disableBlend()
+                //RenderUtils.texture_modularRect(xStart, yStart, getWidth(), getHeight(), resourceLocation, 1f);
+            }
         }
         return true
     }
@@ -71,10 +77,10 @@ class DefTextContainer(text: String) : Container() {
     }
 
     override fun doMouseMoveLocal(mX: Int, mY: Int): Boolean {
-        return true
+        return false
     }
 
-    override fun <T : Event<*>> doEventBusLocal(e: T): Boolean {
+    override fun <T : Event<*>> doEventBusLocal(iEvent: T): Boolean {
         return true
     }
 
