@@ -20,13 +20,12 @@ import net.unaussprechlich.managedgui.lib.templates.defaults.container.DefChatMe
 import net.unaussprechlich.managedgui.lib.templates.defaults.container.DefPictureContainer
 import net.unaussprechlich.managedgui.lib.templates.defaults.container.DefScrollableContainer
 import net.unaussprechlich.managedgui.lib.templates.defaults.container.IScrollSpacerRenderer
-import net.unaussprechlich.managedgui.lib.templates.tabs.containers.TabContainer
 import net.unaussprechlich.managedgui.lib.templates.tabs.containers.TabListElementContainer
 import net.unaussprechlich.managedgui.lib.templates.tabs.containers.TabManager
-import net.unaussprechlich.managedgui.lib.util.ColorRGBA
 import net.unaussprechlich.managedgui.lib.util.DisplayUtil
 import net.unaussprechlich.managedgui.lib.util.RGBA
 import net.unaussprechlich.managedgui.lib.util.RenderUtils
+import net.unaussprechlich.project.connect.container.ChatTabContainer
 import org.lwjgl.input.Keyboard
 import java.util.*
 
@@ -36,7 +35,7 @@ import java.util.*
  */
 object ChatGUI : GUI() {
 
-    private val tabManager = TabManager()
+    internal val tabManager = TabManager()
 
     private val WIDTH = 500
     private val HEIGHT = 200
@@ -45,31 +44,42 @@ object ChatGUI : GUI() {
 
     private val scrollSpacerRenderer = object : IScrollSpacerRenderer {
         override fun render(xStart: Int, yStart: Int, width: Int) {
-            RenderUtils.rect_fade_horizontal_s1_d1(xStart + 25, yStart, width - 42, 2, ConstantsMG.DEF_BACKGROUND_RGBA, ColorRGBA(30, 30, 30, 255))
+            RenderUtils.renderBoxWithColorBlend_s1_d0(xStart + 25, yStart, width - 42, 1, RGBA.P1B1_596068.get())
         }
         override val spacerHeight: Int
-            get() = 2
+            get() = 1
     }
 
-    private val scrollALL = DefScrollableContainer(ConstantsMG.DEF_BACKGROUND_RGBA, WIDTH, HEIGHT - 17, scrollSpacerRenderer)
-    private val partyCon = DefScrollableContainer(ConstantsMG.DEF_BACKGROUND_RGBA, WIDTH, HEIGHT - 17, scrollSpacerRenderer)
-    private val guildCon = DefScrollableContainer(ConstantsMG.DEF_BACKGROUND_RGBA, WIDTH, HEIGHT - 17, scrollSpacerRenderer)
-    private val privateCon = DefScrollableContainer(ConstantsMG.DEF_BACKGROUND_RGBA, WIDTH, HEIGHT - 17, scrollSpacerRenderer)
+    private val scrollALL = DefScrollableContainer(ConstantsMG.DEF_BACKGROUND_RGBA, WIDTH, HEIGHT - 17, scrollSpacerRenderer).apply {
+        minWidth = 400
+        minHeight= 200
+    }
+    private val partyCon = DefScrollableContainer(ConstantsMG.DEF_BACKGROUND_RGBA, WIDTH, HEIGHT - 17, scrollSpacerRenderer).apply {
+        minWidth = 400
+        minHeight= 200
+    }
+    private val guildCon = DefScrollableContainer(ConstantsMG.DEF_BACKGROUND_RGBA, WIDTH, HEIGHT - 17, scrollSpacerRenderer).apply {
+        minWidth = 400
+        minHeight= 200
+    }
+    private val privateCon = DefScrollableContainer(ConstantsMG.DEF_BACKGROUND_RGBA, WIDTH, HEIGHT - 17, scrollSpacerRenderer).apply {
+        minWidth = 400
+        minHeight= 200
+    }
 
     init {
         tabManager.isVisible = false
         registerChild(tabManager)
-        tabManager.registerTab(TabContainer(TabListElementContainer("ALL", RGBA.WHITE.get(), tabManager), scrollALL, tabManager))
-        tabManager.registerTab(TabContainer(TabListElementContainer("PARTY", RGBA.BLUE.get(), tabManager), partyCon, tabManager))
-        tabManager.registerTab(TabContainer(TabListElementContainer("GUILD", RGBA.GREEN.get(), tabManager), guildCon, tabManager))
-        tabManager.registerTab(TabContainer(TabListElementContainer("PRIVATE", RGBA.PURPLE_DARK_MC.get(), tabManager), privateCon, tabManager))
+        tabManager.registerTab(ChatTabContainer(TabListElementContainer("ALL", RGBA.WHITE.get(), tabManager), scrollALL, tabManager))
+        tabManager.registerTab(ChatTabContainer(TabListElementContainer("PARTY", RGBA.BLUE.get(), tabManager), partyCon, tabManager))
+        tabManager.registerTab(ChatTabContainer(TabListElementContainer("GUILD", RGBA.GREEN.get(), tabManager), guildCon, tabManager))
+        tabManager.registerTab(ChatTabContainer(TabListElementContainer("PRIVATE", RGBA.PURPLE_DARK_MC.get(), tabManager), privateCon, tabManager))
 
         updatePosition()
 
         ChatDetector.registerEventHandler(ChatDetector.PrivateMessage) {
             addChatMessage(privateCon, it.data["name"].toString(), it.data["message"].toString(), HypixelRank.getRankByName(it.data["rank"].toString()))
         }
-
 
         ChatDetector.registerEventHandler(ChatDetector.GuildChat) {
             addChatMessage(guildCon, it.data["name"].toString(), it.data["message"].toString(), HypixelRank.getRankByName(it.data["rank"].toString()))
