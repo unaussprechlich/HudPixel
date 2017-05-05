@@ -12,7 +12,7 @@ public class CCKillsModularGuiProvider extends SimpleHudPixelModularGuiProvider 
     @ConfigPropertyBoolean(category = CCategory.HUD, id = "copsAndCrimsKillCounter", comment = "Cops and Crims Kill Counter", def = true)
     public static boolean enabled = false;
 
-    private static final String KILLS_DISPLAY = AQUA + "Kills: " + RED;
+    private static final String KILLS_DISPLAY = RED + "Kills: ";
     private int kills;
 
     @Override
@@ -47,7 +47,7 @@ public class CCKillsModularGuiProvider extends SimpleHudPixelModularGuiProvider 
 
     @Override
     public void onGameEnd() {
-
+        kills = 0;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class CCKillsModularGuiProvider extends SimpleHudPixelModularGuiProvider 
 
     @Override
     public void onChatMessage(String textMessage, String formattedMessage) {
-        if(textMessage.contains("(Kill)")){
+        if(textMessage.contains("(Kill)") && textMessage.startsWith("+")){
             kills++;
         }
     }
