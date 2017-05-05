@@ -9,7 +9,7 @@ import net.unaussprechlich.hudpixelextended.util.McColorHelper;
 
 public class CCAssistsModularGuiProvider extends SimpleHudPixelModularGuiProvider implements McColorHelper {
 
-    @ConfigPropertyBoolean(category = CCategory.HUD, id = "copsAndCrimsKillCounter", comment = "Cops and Crims Kill Counter", def = true)
+    @ConfigPropertyBoolean(category = CCategory.HUD, id = "copsAndCrimsAssistCounter", comment = "Cops and Crims Assist Counter", def = true)
     public static boolean enabled = false;
 
     private static final String ASSISTS_DISPLAY = YELLOW + "Assists: ";
@@ -17,7 +17,7 @@ public class CCAssistsModularGuiProvider extends SimpleHudPixelModularGuiProvide
 
     @Override
     public boolean showElement() {
-        return doesMatchForGame() && enabled;
+        return doesMatchForGame() && enabled && !GameDetector.getGameHasntBegan();
     }
 
     @Override
@@ -27,7 +27,7 @@ public class CCAssistsModularGuiProvider extends SimpleHudPixelModularGuiProvide
 
     @Override
     public String getAfterstats() {
-        return YELLOW + "You got a total of " + assists + " assists.";
+        return YELLOW + "You had a total of " + GREEN + assists + YELLOW + " assists.";
     }
 
     @Override

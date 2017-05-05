@@ -17,7 +17,7 @@ public class CCKillsModularGuiProvider extends SimpleHudPixelModularGuiProvider 
 
     @Override
     public boolean showElement() {
-        return doesMatchForGame() && enabled;
+        return doesMatchForGame() && enabled && !GameDetector.getGameHasntBegan();
     }
 
     @Override
@@ -27,7 +27,7 @@ public class CCKillsModularGuiProvider extends SimpleHudPixelModularGuiProvider 
 
     @Override
     public String getAfterstats() {
-        return YELLOW + "You got a total of " + GREEN + kills + YELLOW + " kills.";
+        return YELLOW + "You had a total of " + GREEN + kills + YELLOW + " kills.";
     }
 
     @Override
