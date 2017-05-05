@@ -7,13 +7,13 @@ import eladkay.hudpixel.modulargui.SimpleHudPixelModularGuiProvider;
 import eladkay.hudpixel.util.GameType;
 import net.unaussprechlich.hudpixelextended.util.McColorHelper;
 
-public class CCKillsModularGuiProvider extends SimpleHudPixelModularGuiProvider implements McColorHelper {
+public class CCAssistsModularGuiProvider extends SimpleHudPixelModularGuiProvider implements McColorHelper {
 
     @ConfigPropertyBoolean(category = CCategory.HUD, id = "copsAndCrimsKillCounter", comment = "Cops and Crims Kill Counter", def = true)
     public static boolean enabled = false;
 
-    private static final String KILLS_DISPLAY = RED + "Kills: ";
-    private int kills;
+    private static final String ASSISTS_DISPLAY = YELLOW + "Assists: ";
+    private int assists;
 
     @Override
     public boolean showElement() {
@@ -22,12 +22,12 @@ public class CCKillsModularGuiProvider extends SimpleHudPixelModularGuiProvider 
 
     @Override
     public String content() {
-        return KILLS_DISPLAY + kills;
+        return ASSISTS_DISPLAY + assists;
     }
 
     @Override
     public String getAfterstats() {
-        return YELLOW + "You got a total of " + GREEN + kills + YELLOW + " kills.";
+        return YELLOW + "You got a total of " + assists + " assists.";
     }
 
     @Override
@@ -37,17 +37,17 @@ public class CCKillsModularGuiProvider extends SimpleHudPixelModularGuiProvider 
 
     @Override
     public void setupNewGame() {
-        kills = 0;
+        assists = 0;
     }
 
     @Override
     public void onGameStart() {
-        kills = 0;
+        assists = 0;
     }
 
     @Override
     public void onGameEnd() {
-        kills = 0;
+        assists = 0;
     }
 
     @Override
@@ -56,14 +56,9 @@ public class CCKillsModularGuiProvider extends SimpleHudPixelModularGuiProvider 
     }
 
     @Override
-    public boolean ignoreEmptyCheck() {
-        return false;
-    }
-
-    @Override
     public void onChatMessage(String textMessage, String formattedMessage) {
-        if(textMessage.contains("(Kill)") && textMessage.startsWith("+")){
-            kills++;
+        if(textMessage.startsWith("+") && textMessage.contains("(Assist)")){
+            assists++;
         }
     }
 }

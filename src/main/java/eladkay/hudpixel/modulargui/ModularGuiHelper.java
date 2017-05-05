@@ -89,6 +89,7 @@ public class ModularGuiHelper implements McColorHelper {
     public static final ModularGuiRegistry.Element WALLS3_FKILLCOUNTER = new ModularGuiRegistry.Element("simp9", new MWFinalKillCounterModularGuiProvider());
 
     public static final ModularGuiRegistry.Element CC_KILLCOUNTER = new ModularGuiRegistry.Element("simp10", new CCKillsModularGuiProvider());
+    public static final ModularGuiRegistry.Element CC_ASSISTCOUNTER = new ModularGuiRegistry.Element("simp11", new CCAssistsModularGuiProvider());
 
     public static final ModularGuiRegistry.Element DEATH = new ModularGuiRegistry.Element(DeathCounterModularGuiProvider.DEATH_TEXT, new DeathCounterModularGuiProvider());
     public static List<IHudPixelModularGuiProviderBase> providers = Lists.newArrayList();
@@ -137,6 +138,8 @@ public class ModularGuiHelper implements McColorHelper {
         ModularGuiRegistry.registerElement(WALLS3_FKILLCOUNTER);
         providers.add((IHudPixelModularGuiProviderBase) WALLS3_FKILLCOUNTER.provider);
 
+        ModularGuiRegistry.registerElement(CC_ASSISTCOUNTER);
+        providers.add((IHudPixelModularGuiProviderBase) CC_ASSISTCOUNTER.provider);
         ModularGuiRegistry.registerElement(CC_KILLCOUNTER);
         providers.add((IHudPixelModularGuiProviderBase) CC_KILLCOUNTER.provider);
 
