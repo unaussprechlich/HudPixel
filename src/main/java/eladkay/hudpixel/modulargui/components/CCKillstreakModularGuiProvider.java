@@ -10,7 +10,7 @@ import net.unaussprechlich.hudpixelextended.util.McColorHelper;
 
 import java.util.regex.Pattern;
 
-public class CCKillstreakCounterModularGuiProvider extends SimpleHudPixelModularGuiProvider implements McColorHelper {
+public class CCKillstreakModularGuiProvider extends SimpleHudPixelModularGuiProvider implements McColorHelper {
 
     @ConfigPropertyBoolean(category = CCategory.HUD, id = "copsAndCrimsKillstreakCounter", comment = "Cops and Crims Killstreak Counter", def = true)
     public static boolean enabled = false;

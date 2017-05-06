@@ -54,7 +54,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.unaussprechlich.hudpixelextended.update.UpdateNotifier;
@@ -91,7 +90,8 @@ public class ModularGuiHelper implements McColorHelper {
 
     public static final ModularGuiRegistry.Element CC_KILLCOUNTER = new ModularGuiRegistry.Element("CC_KC", new CCKillsModularGuiProvider());
     public static final ModularGuiRegistry.Element CC_ASSISTCOUNTER = new ModularGuiRegistry.Element("CC_AC", new CCAssistsModularGuiProvider());
-    public static final ModularGuiRegistry.Element CC_KILLSTREAKCOUNTER = new ModularGuiRegistry.Element("CC_KSC", new CCKillstreakCounterModularGuiProvider());
+    public static final ModularGuiRegistry.Element CC_KILLSTREAKCOUNTER = new ModularGuiRegistry.Element("CC_KSC", new CCKillstreakModularGuiProvider());
+    public static final ModularGuiRegistry.Element CC_HEADSHOTCOUNTER = new ModularGuiRegistry.Element("CC_HSC", new CCHeadshotModularGuiProvider());
 
     public static final ModularGuiRegistry.Element DEATH = new ModularGuiRegistry.Element(DeathCounterModularGuiProvider.DEATH_TEXT, new DeathCounterModularGuiProvider());
     public static List<IHudPixelModularGuiProviderBase> providers = Lists.newArrayList();
@@ -140,12 +140,14 @@ public class ModularGuiHelper implements McColorHelper {
         ModularGuiRegistry.registerElement(WALLS3_FKILLCOUNTER);
         providers.add((IHudPixelModularGuiProviderBase) WALLS3_FKILLCOUNTER.provider);
 
-        ModularGuiRegistry.registerElement(CC_KILLSTREAKCOUNTER);
-        providers.add((IHudPixelModularGuiProviderBase) CC_KILLSTREAKCOUNTER.provider);
-        ModularGuiRegistry.registerElement(CC_ASSISTCOUNTER);
-        providers.add((IHudPixelModularGuiProviderBase) CC_ASSISTCOUNTER.provider);
         ModularGuiRegistry.registerElement(CC_KILLCOUNTER);
         providers.add((IHudPixelModularGuiProviderBase) CC_KILLCOUNTER.provider);
+        ModularGuiRegistry.registerElement(CC_ASSISTCOUNTER);
+        providers.add((IHudPixelModularGuiProviderBase) CC_ASSISTCOUNTER.provider);
+        ModularGuiRegistry.registerElement(CC_KILLSTREAKCOUNTER);
+        providers.add((IHudPixelModularGuiProviderBase) CC_KILLSTREAKCOUNTER.provider);
+        ModularGuiRegistry.registerElement(CC_HEADSHOTCOUNTER);
+        providers.add((IHudPixelModularGuiProviderBase) CC_HEADSHOTCOUNTER.provider);
 
         ModularGuiRegistry.registerElement(DEATH);
         providers.add((IHudPixelModularGuiProviderBase) DEATH.provider);
