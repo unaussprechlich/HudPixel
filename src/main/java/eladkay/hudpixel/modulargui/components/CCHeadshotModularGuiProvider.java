@@ -7,11 +7,10 @@ import eladkay.hudpixel.modulargui.SimpleHudPixelModularGuiProvider;
 import eladkay.hudpixel.util.GameType;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.unaussprechlich.hudpixelextended.util.McColorHelper;
-import org.newdawn.slick.Game;
 
 public class CCHeadshotModularGuiProvider extends SimpleHudPixelModularGuiProvider implements McColorHelper {
 
-    @ConfigPropertyBoolean(category = CCategory.HUD, id = "copsAndCrimsKillstreakCounter", comment = "Cops and Crims Killstreak Counter", def = true)
+    @ConfigPropertyBoolean(category = CCategory.HUD, id = "copsAndCrimsHeadshotCounter", comment = "Cops and Crims Headshot Counter", def = true)
     public static boolean enabled = false;
 
     private int headshots;
