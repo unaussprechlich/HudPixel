@@ -109,62 +109,49 @@ public class CCDefusalModularGuiProvider extends SimpleHudPixelModularGuiProvide
     private void makeUpdates(){
         isDefusal = ScoreboardReader.getScoreboardTitle().contains("0");
 
-        try {
-            if (!doesMatchForGame()) {
-                return;
+        if (!doesMatchForGame()) {
+            return;
+        }
+
+        bombStatus = -1;
+
+        EntityPlayer p = getCarrier();
+
+        if (p != null) {
+            boolean isSelf = FMLClientHandler.instance().getClientPlayerEntity().getName().equalsIgnoreCase(p.getName());
+
+            bombStatus = 1;
+            optSuffix = isSelf ? "me" : getCarrier().getName();
+
+            return;
+        }
+
+
+        if (bombStatus < 0) {
+            for (String score : ScoreboardReader.getScoreboardNames()) {
+
+                if (score.contains("Defend the bomb") || score.contains("Defuse the bomb")) {
+                    bombStatus = 0;
+                }
+
+                if (score.contains("Team:")) team = score.split(" ")[4];
+
+                if (score.contains("Objective")) optSuffix = " - " + score.split(" ")[1];
+
+                if (score.contains("Defend bomb sites")) {
+                    bombStatus = 3;
+                    team = "Cops";
+                }
+                //Defend the bomb!
+                //Defend bomb sites!
+                //Defuse the bomb!
             }
-
-            bombStatus = -1;
-
-            EntityPlayer p = getCarrier();
-
-            if (!(p == null)) {
-                boolean isSelf = FMLClientHandler.instance().getClientPlayerEntity().getName().equalsIgnoreCase(p.getName());
-
-                bombStatus = 1;
-                optSuffix = isSelf ? "me" : getCarrier().getName();
-
-                return;
-            }
-
 
             if (bombStatus < 0) {
-                for (String score : ScoreboardReader.getScoreboardNames()) {
+                bombStatus = team != null && team.contains("Cops") ? 3 : 2;
 
-                    if (score.contains("Defend the bomb") || score.contains("Defuse the bomb")) {
-                        bombStatus = 0;
-                    }
-
-                    if (score.contains("Team:")) {
-                        team = score.split(" ")[4];
-                    }
-
-                    if (score.contains("Objective")) {
-                        optSuffix = " - " + score.split(" ")[1];
-                    }
-
-                    if (score.contains("Defend bomb sites")) {
-                        bombStatus = 3;
-                        team = "Cops";
-                    }
-                    //Defend the bomb!
-                    //Defend bomb sites!
-                    //Defuse the bomb!
-                }
-
-                if (bombStatus < 0) {
-
-                    if (team != null && team.contains("Cops")) {
-                        bombStatus = 3;
-                        optSuffix = "";
-                    } else {
-                        bombStatus = 2;
-                        optSuffix = "";
-                    }
-                }
+                optSuffix = "";
             }
-        } catch (Exception e){
-            e.printStackTrace();
         }
     }
 }
