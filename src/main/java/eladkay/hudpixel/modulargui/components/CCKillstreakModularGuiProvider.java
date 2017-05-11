@@ -67,17 +67,12 @@ public class CCKillstreakModularGuiProvider extends SimpleHudPixelModularGuiProv
 
     @Override
     public void onChatMessage(String textMessage, String formattedMessage) {
-        if(DEATH_PATTERN.matcher(textMessage).find()){
-            onDeath();
-        } else if (KILL_PATTERN.matcher(textMessage).find()){
-            onKill();
-        }
+        if(DEATH_PATTERN.matcher(textMessage).find()) onDeath();
+        else if (KILL_PATTERN.matcher(textMessage).find()) onKill();
     }
 
     private void onDeath(){
-        if(killstreak >= 3){
-            totalKillstreaks++;
-        }
+        if(killstreak >= 3) totalKillstreaks++;
 
         killstreak = 0;
     }
