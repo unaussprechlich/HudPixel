@@ -85,3 +85,4 @@ $RECYCLE.BIN/
 !/src/main/java/net/unaussprechlich/managedgui/lib/templates/tabs/containers/TabManager.kt
 !/src/main/java/net/unaussprechlich/project/connect/chat/newChatWindowControllerContainer.kt
 !/.gitignore
+/logs/
