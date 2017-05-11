@@ -71,8 +71,8 @@ public class HudPixelMethodHandles {
     @Nonnull
     private static final MethodHandle entityImmuneToFire;
 
-    //@Nonnull
-    //private static final MethodHandle rightClickDelayTimer;
+    @Nonnull
+    private static final MethodHandle rightClickDelayTimer;
 
     @Nonnull
     private static final MethodHandle dirServerResourcepacks;
@@ -84,9 +84,11 @@ public class HudPixelMethodHandles {
             Field entityF = ReflectionHelper.findField(Entity.class, "field_70178_ae", "isImmuneToFire", "ab");
             entityImmuneToFire = publicLookup().unreflectSetter(entityF);
             //test
-            //TODO: FIX THIS, THROWS ERROR
-            //Field rightC = ReflectionHelper.findField(Minecraft.class, "rightClickDelayTimer");
-            //rightClickDelayTimer = publicLookup().unreflectSetter(rightC);
+            Field rightC = ReflectionHelper.findField(Minecraft.class, "rightClickDelayTimer");
+            rightClickDelayTimer = publicLookup().unreflectSetter(rightC);
+
+            Field dirServerResourceP = ReflectionHelper.findField(ResourcePackRepository.class, "dirServerResourcepacks");
+            dirServerResourcepacks  = publicLookup().unreflectSetter(dirServerResourceP);
         } catch (Throwable t) {
             Logger.getLogger("HudPixel").log(Level.SEVERE, "Couldn't initialize methodhandles! Things will be broken!");
             t.printStackTrace();
@@ -120,7 +122,7 @@ public class HudPixelMethodHandles {
 
     public static void setRightClickDelayTimer(int value) {
         try {
-            //rightClickDelayTimer.invokeExact(Minecraft.getMinecraft(), value);
+            rightClickDelayTimer.invokeExact(Minecraft.getMinecraft(), value);
         } catch (Throwable t) {
             throw propagate(t);
         }
