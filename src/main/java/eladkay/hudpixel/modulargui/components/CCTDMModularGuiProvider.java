@@ -17,6 +17,7 @@ public class CCTDMModularGuiProvider extends SimpleHudPixelModularGuiProvider im
     private int challengeKills;
     private boolean isTDM = false;
     private static String CHALLENGE_DISPLAY = GREEN + "Challenge Kills: ";
+    private int ticks = 0;
 
     @Override
     public boolean showElement() {
@@ -55,7 +56,14 @@ public class CCTDMModularGuiProvider extends SimpleHudPixelModularGuiProvider im
 
     @Override
     public void onTickUpdate() {
+        tick++;
+        
+        if(tick >= 20) checkForTDM();
+    }
+    
+    private void checkForTDM() {
         isTDM = ScoreboardReader.getScoreboardTitle().contains("DEATHMATCH");
+        ticks = 0;
     }
 
     @Override
