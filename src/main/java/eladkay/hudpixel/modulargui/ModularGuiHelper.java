@@ -72,6 +72,7 @@ public class ModularGuiHelper implements McColorHelper {
     public static final ModularGuiRegistry.Element COORDS = new ModularGuiRegistry.Element("possimp", CoordsDisplayModularGuiProvider.INSTANCE);
     public static final ModularGuiRegistry.Element COIN_COUNTER = new ModularGuiRegistry.Element(CoinCounterModularGuiProvider.COINS_DISPLAY_TEXT, new CoinCounterModularGuiProvider());
     public static final ModularGuiRegistry.Element TIMER = new ModularGuiRegistry.Element(TimerModularGuiProvider.TIME_DISPLAY_MESSAGE, TimerModularGuiProvider.instance);
+    public static final ModularGuiRegistry.Element ARROW_COUNTER = new ModularGuiRegistry.Element("ARR_CT", new ArrowCounterModularGuiProvider());
     public static final ModularGuiRegistry.Element BLITZ_STAR_TRACKER = new ModularGuiRegistry.Element(BlitzStarTrackerModularGuiProvider.DISPLAY_MESSAGE, new BlitzStarTrackerModularGuiProvider());
     public static final ModularGuiRegistry.Element DEATHMATCH_TRACKER = new ModularGuiRegistry.Element("simp1", new BlitzDeathmatchNotifierModularGuiProvider());
     public static final ModularGuiRegistry.Element KILLSTREAK_TRACKER = new ModularGuiRegistry.Element("simp2", new KillstreakTrackerModularGuiProvider());
@@ -93,6 +94,7 @@ public class ModularGuiHelper implements McColorHelper {
     public static final ModularGuiRegistry.Element CC_KILLSTREAKCOUNTER = new ModularGuiRegistry.Element("CC_KSC", new CCKillstreakModularGuiProvider());
     public static final ModularGuiRegistry.Element CC_HEADSHOTCOUNTER = new ModularGuiRegistry.Element("CC_HSC", new CCHeadshotModularGuiProvider());
     public static final ModularGuiRegistry.Element CC_TDM_ADDONS = new ModularGuiRegistry.Element("CC_TDMA", new CCTDMModularGuiProvider());
+    /*public static final ModularGuiRegistry.Element CC_DEF_ADDONS = new ModularGuiRegistry.Element("CC_DEFA", new CCDefusalModularGuiProvider());*/
 
     public static final ModularGuiRegistry.Element DEATH = new ModularGuiRegistry.Element(DeathCounterModularGuiProvider.DEATH_TEXT, new DeathCounterModularGuiProvider());
     public static List<IHudPixelModularGuiProviderBase> providers = Lists.newArrayList();
@@ -114,6 +116,8 @@ public class ModularGuiHelper implements McColorHelper {
         providers.add((IHudPixelModularGuiProviderBase) COIN_COUNTER.provider);
         ModularGuiRegistry.registerElement(TIMER);
         providers.add((IHudPixelModularGuiProviderBase) TIMER.provider);
+        ModularGuiRegistry.registerElement(ARROW_COUNTER);
+        providers.add((IHudPixelModularGuiProviderBase) ARROW_COUNTER.provider);
         ModularGuiRegistry.registerElement(BLITZ_STAR_TRACKER);
         providers.add((IHudPixelModularGuiProviderBase) BLITZ_STAR_TRACKER.provider);
         ModularGuiRegistry.registerElement(DEATHMATCH_TRACKER);
@@ -151,6 +155,8 @@ public class ModularGuiHelper implements McColorHelper {
         providers.add((IHudPixelModularGuiProviderBase) CC_HEADSHOTCOUNTER.provider);
         ModularGuiRegistry.registerElement(CC_TDM_ADDONS);
         providers.add((IHudPixelModularGuiProviderBase) CC_TDM_ADDONS.provider);
+        /*ModularGuiRegistry.registerElement(CC_DEF_ADDONS);
+        providers.add((IHudPixelModularGuiProviderBase) CC_DEF_ADDONS.provider);*/
 
         ModularGuiRegistry.registerElement(DEATH);
         providers.add((IHudPixelModularGuiProviderBase) DEATH.provider);

@@ -55,11 +55,7 @@ public class CCTDMModularGuiProvider extends SimpleHudPixelModularGuiProvider im
 
     @Override
     public void onTickUpdate() {
-        if(ScoreboardReader.getScoreboardTitle().contains("DEATHMATCH")){
-            isTDM = true;
-        } else {
-            isTDM = false;
-        }
+        isTDM = ScoreboardReader.getScoreboardTitle().contains("DEATHMATCH");
     }
 
     @Override
