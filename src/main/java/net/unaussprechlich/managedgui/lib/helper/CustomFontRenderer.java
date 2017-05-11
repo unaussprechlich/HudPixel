@@ -54,7 +54,6 @@ public class CustomFontRenderer extends FontRenderer {
     public CustomFontRenderer(Font awtFont) {
         super(Minecraft.getMinecraft().gameSettings, new ResourceLocation("textures/font/ascii.png"), Minecraft.getMinecraft().getTextureManager(), false);
 
-
         font = new UnicodeFont(awtFont);
         fontBold = new UnicodeFont(awtFont, FONT_HEIGHT_FT , true, false);
         fontItalic = new UnicodeFont(awtFont, FONT_HEIGHT_FT, false, true);
@@ -88,18 +87,19 @@ public class CustomFontRenderer extends FontRenderer {
         return INSTANCE;
     }
 
-
-
-    public void drawFormatted(String s, int x, int y){
-        ColorRGBA     color = RGBA.WHITE_MC.get();
-        int           posX  = 0;
-        StringBuilder sB    = new StringBuilder();
-
+    public void reset(){
         randomStyle = false;
         boldStyle = false;
         italicStyle = false;
         strikethroughStyle = false;
         underlineStyle = false;
+    }
+
+    public void drawFormatted(String s, int x, int y){
+        ColorRGBA     color = RGBA.WHITE_MC.get();
+        int           posX  = 0;
+        StringBuilder sB    = new StringBuilder();
+        reset();
 
         for(int i = 0; i < s.length(); i++){
             char c0 = s.charAt(i);
@@ -120,11 +120,7 @@ public class CustomFontRenderer extends FontRenderer {
                     else if (i1 == 19) this.underlineStyle = true;
                     else if (i1 == 20) this.italicStyle = true;
                     else if (i1 == 21) {
-                        this.randomStyle = false;
-                        this.boldStyle = false;
-                        this.strikethroughStyle = false;
-                        this.underlineStyle = false;
-                        this.italicStyle = false;
+                        reset();
                         color = RGBA.WHITE_MC.get();
                     }
 
@@ -148,7 +144,6 @@ public class CustomFontRenderer extends FontRenderer {
             if(i == s.length() - 1) renderString(sB.toString(), x + posX, y, color);
         }
     }
-
 
     public void renderString(String string, int x, int y, ColorRGBA color) {
         if(string == null || string.equalsIgnoreCase("")) return;
@@ -193,7 +188,7 @@ public class CustomFontRenderer extends FontRenderer {
         else {
             String s = str.substring(0, i);
             char c0 = str.charAt(i);
-            boolean flag = c0 == 32 || c0 == 10;
+            boolean flag = (c0 == 32 || c0 == 10);
             String s1 = getFormatFromString(s) + str.substring(i + (flag ? 1 : 0));
             return s + "\n" + wrapFormattedStringToWidth(s1, wrapWidth);
         }
@@ -226,9 +221,7 @@ public class CustomFontRenderer extends FontRenderer {
                         ++k;
                         char c1 = str.charAt(k);
                         if (c1 != 108 && c1 != 76)
-                            if (c1 == 114 || c1 == 82 || isFormatColor(c1))
-                                flag = false;
-                            else flag = true;
+                            flag = ! (c1 == 114 || c1 == 82 || isFormatColor(c1));
                     }
             }
 

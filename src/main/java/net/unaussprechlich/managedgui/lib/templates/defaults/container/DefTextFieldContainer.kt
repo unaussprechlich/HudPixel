@@ -8,7 +8,11 @@
 
 package net.unaussprechlich.managedgui.lib.templates.defaults.container
 
+import net.minecraft.util.EnumChatFormatting
+import net.minecraftforge.client.event.ClientChatReceivedEvent
+import net.minecraftforge.client.event.GuiOpenEvent
 import net.unaussprechlich.managedgui.lib.ConstantsMG
+import net.unaussprechlich.managedgui.lib.container.Container
 import net.unaussprechlich.managedgui.lib.event.EnumDefaultEvents
 import net.unaussprechlich.managedgui.lib.event.events.KeyPressedCodeEvent
 import net.unaussprechlich.managedgui.lib.event.events.KeyPressedEvent
@@ -21,7 +25,16 @@ import net.unaussprechlich.managedgui.lib.util.FontUtil
 import net.unaussprechlich.managedgui.lib.util.RGBA
 import net.unaussprechlich.managedgui.lib.util.RenderUtils
 
-open class DefTextFieldContainer(text: String, width: Int) : DefTextAutoLineBreakContainer(text, width) {
+class DefTextFieldContainer(text: String, width: Int, var hint : String = "", val sizeCallback : (height : Int) -> Unit) : Container() {
+
+    override fun doResizeLocal(width: Int, height: Int): Boolean { return true }
+
+    val textCon =  DefTextAutoLineBreakContainer(text, width - 20, { h ->
+        update()
+    }).apply {
+        yOffset = 5
+        xOffset = 5
+    }
 
     var hasFocus = false
     var cursorBlink = false
@@ -30,20 +43,28 @@ open class DefTextFieldContainer(text: String, width: Int) : DefTextAutoLineBrea
     var cursorY = 0
 
     init {
-        registerClickedListener { clickType, container ->
+        registerChild(textCon)
+
+        this.width = width
+
+        textCon.registerClickedListener { clickType, _ ->
             if(clickType == MouseHandler.ClickType.SINGLE) hasFocus = !hasFocus
         }
+
         cursorPos = text.length
+        backgroundRGBA = RGBA.P1B1_DEF.get()
     }
 
-    override fun onUpdate(){
-        updateCursor()
+    fun update(){
+        height = textCon.height + 10
+        textCon.width = width - 27
+        sizeCallback.invoke(height)
     }
 
     fun updateCursor(){
         var index = 0
         var row = 0
-        for(s in renderList){
+        for(s in textCon.renderList){
             if((index + s.length) >= cursorPos - row){
                 cursorX = FontUtil.getStringWidth(s.substring(0, cursorPos - index - row) )
                 cursorY = row * ConstantsMG.TEXT_Y_OFFSET
@@ -55,20 +76,12 @@ open class DefTextFieldContainer(text: String, width: Int) : DefTextAutoLineBrea
     }
 
     override fun doRenderTickLocal(xStart: Int, yStart: Int, width: Int, height: Int, ees: EnumEventState): Boolean {
-        super.doRenderTickLocal(xStart + 5 , yStart + 5, width, height, ees)
-        if(ees == EnumEventState.POST) return true
+        if(ees == EnumEventState.PRE) return true
 
-        RenderUtils.renderBoxWithColorBlend_s1_d0(xStart, yStart, width + 26 + 5, height + 12, RGBA.P1B1_DEF.get())
+        RenderUtils.drawBorderInlineShadowBox(xStart + 2 , yStart + 2, width - 4, height - 4, RGBA.P1B1_596068.get(), RGBA.P1B1_DEF.get())
 
-        RenderUtils.renderBoxWithColorBlend_s1_d1(xStart + 2, yStart + 2 , width + 22 + 5, 1, RGBA.P1B1_596068.get())
-        RenderUtils.renderBoxWithColorBlend_s1_d1(xStart + 2, yStart + 3 , 1, height + 6, RGBA.P1B1_596068.get())
-        RenderUtils.renderBoxWithColorBlend_s1_d1(xStart + width + 23 + 5, yStart + 3, 1, height + 6, RGBA.P1B1_596068.get())
-        RenderUtils.renderBoxWithColorBlend_s1_d1(xStart + 2, yStart + height + 9,width + 22 + 5, 1, RGBA.P1B1_596068.get())
-
-        RenderUtils.renderRectWithInlineShadow_s1_d1(xStart + 3, yStart + 3, height + 6, width + 20 + 5, RGBA.BLACK_LIGHT.get(), RGBA.P1B1_DEF.get(), 2)
-
-        if(cursorBlink)
-        RenderUtils.renderBoxWithColorBlend_s1_d0(xStart + 5 + cursorX, yStart + 5 + cursorY, 1, 9, RGBA.P1B1_596068.get())
+        if(textCon.text == "" && hint != "") FontUtil.draw("" + EnumChatFormatting.GRAY + EnumChatFormatting.ITALIC + hint, xStart+5, yStart+5)
+        if(cursorBlink)                      RenderUtils.renderBoxWithColorBlend_s1_d0(xStart + 5 + cursorX, yStart + 5 + cursorY, 1, 9, RGBA.P1B1_596068.get())
 
         return true
     }
@@ -85,17 +98,17 @@ open class DefTextFieldContainer(text: String, width: Int) : DefTextAutoLineBrea
         if(iEvent.id == EnumDefaultEvents.KEY_PRESSED_CODE.get()){
             when((iEvent as KeyPressedCodeEvent).data){
                 14 -> {
-                    if(text.isNotEmpty())
-                        if(cursorPos == text.length){
-                            text = text.substring(0, text.length -1)
+                    if(textCon.text.isNotEmpty())
+                        if(cursorPos == textCon.text.length){
+                            textCon.text = textCon.text.substring(0, textCon.text.length -1)
                             cursorPos--
                         } else{
-                            text = text.substring(0, cursorPos - 1) + text.substring(cursorPos, text.length)
+                            textCon.text = textCon.text.substring(0, cursorPos - 1) + textCon.text.substring(cursorPos, textCon.text.length)
                             if(cursorPos > 0) cursorPos--
                         }
                 }
                 205 -> {
-                    if(cursorPos + 1 <= text.length) cursorPos++
+                    if(cursorPos + 1 <= textCon.text.length) cursorPos++
                 }
                 203 -> {
                     if(cursorPos > 0) cursorPos--
@@ -110,16 +123,23 @@ open class DefTextFieldContainer(text: String, width: Int) : DefTextAutoLineBrea
         val c = (iEvent as KeyPressedEvent).data.toCharArray()[0]
 
 
-        if(cursorPos == text.length){
-            text += c
+        if(cursorPos == textCon.text.length){
+            textCon.text += c
             cursorPos++
         } else {
-            text = text.substring(0, cursorPos) + c + text.substring(cursorPos, text.length)
+            textCon.text = textCon.text.substring(0, cursorPos) + c + textCon.text.substring(cursorPos, textCon.text.length)
             cursorPos++
         }
 
         return true
     }
+
+    override fun doClientTickLocal(): Boolean { return true }
+    override fun doChatMessageLocal(e: ClientChatReceivedEvent?): Boolean { return true }
+    override fun doClickLocal(clickType: MouseHandler.ClickType?, isThisContainer: Boolean): Boolean { return true }
+    override fun doScrollLocal(i: Int, isThisContainer: Boolean): Boolean { return true }
+    override fun doMouseMoveLocal(mX: Int, mY: Int): Boolean { return true }
+    override fun doOpenGUILocal(e: GuiOpenEvent?): Boolean { return true }
 
 
 }

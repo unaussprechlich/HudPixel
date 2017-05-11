@@ -15,39 +15,29 @@ import net.unaussprechlich.managedgui.lib.event.util.Event
 import net.unaussprechlich.managedgui.lib.handler.MouseHandler
 import net.unaussprechlich.managedgui.lib.util.EnumEventState
 
-/**
- * DefCustomRenderContainer Created by Alexander on 07.03.2017.
- * Description:
- */
-class DefCustomRenderContainer() : Container() {
 
-    var customRenderer : ICustomRenderer? = null
-    var renderer : ((xStart: Int, yStart: Int, width: Int, height: Int, con: Container, ees: EnumEventState) -> Unit)? = null
+open class DefWrapperContainer : Container(){
 
-
-    constructor(customRenderer: ICustomRenderer) : this(){
-        this.customRenderer = customRenderer
-    }
-
-    constructor(renderer : (xStart: Int, yStart: Int, width: Int, height: Int, con: Container, ees: EnumEventState) -> Unit ) : this() {
-        this.renderer = renderer
+    override fun doRender(xStart: Int, yStart: Int): Boolean {
+        updateXYStart(xStart, yStart)
+        if (!isVisible) return false
+        if (!doRenderTickLocal(this.xStart, this.yStart, width, height, EnumEventState.PRE)) return false
+        return doRenderTickLocal(this.xStart, this.yStart, width, height, EnumEventState.POST)
     }
 
     override fun doClientTickLocal(): Boolean {
         return true
     }
 
-    override fun doRenderTickLocal(xStart: Int, yStart: Int, width: Int, height: Int, ees: EnumEventState): Boolean {
-        if(renderer != null) renderer!!.invoke(xStart, yStart, width, height, this, ees)
-        if(customRenderer != null) customRenderer!!.onRender(xStart, yStart, width, height, this, ees)
-       return true
-    }
-
-    override fun doChatMessageLocal(e: ClientChatReceivedEvent): Boolean {
+    override fun doRenderTickLocal(xStart: Int, yStart: Int, width: Int, height: Int, ees: EnumEventState?): Boolean {
         return true
     }
 
-    override fun doClickLocal(clickType: MouseHandler.ClickType, isThisContainer: Boolean): Boolean {
+    override fun doChatMessageLocal(e: ClientChatReceivedEvent?): Boolean {
+        return true
+    }
+
+    override fun doClickLocal(clickType: MouseHandler.ClickType?, isThisContainer: Boolean): Boolean {
         return true
     }
 
@@ -63,7 +53,7 @@ class DefCustomRenderContainer() : Container() {
         return true
     }
 
-    override fun doOpenGUILocal(e: GuiOpenEvent): Boolean {
+    override fun doOpenGUILocal(e: GuiOpenEvent?): Boolean {
         return true
     }
 

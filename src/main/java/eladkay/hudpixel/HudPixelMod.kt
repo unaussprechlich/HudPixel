@@ -84,7 +84,7 @@ import org.lwjgl.input.Keyboard
 import java.util.*
 
 
-@Mod(modid = HudPixelMod.MODID, version = HudPixelMod.SHORT_VERSION, name = HudPixelMod.NAME, guiFactory = "com.palechip.hudpixelmod.config.HudPixelGuiFactory", acceptedMinecraftVersions = "1.8.9")
+@Mod(modid = HudPixelMod.MODID, version = HudPixelMod.SHORT_VERSION, name = HudPixelMod.NAME, guiFactory = "eladkay.hudpixel.config.HudPixelGuiFactory", acceptedMinecraftVersions = "1.8.9")
 class HudPixelMod {
     lateinit var gameDetector: GameDetector
     var logger: Logger? = null
@@ -165,8 +165,10 @@ class HudPixelMod {
         // Initialize key bindings
         this.pressToPlay = KeyBinding("Press this key to play the game set in the Modular GUI", Keyboard.KEY_P, KEY_CATEGORY)
         this.openConfigGui = KeyBinding("Open Config", Keyboard.KEY_M, KEY_CATEGORY)
+
         ClientRegistry.registerKeyBinding(this.pressToPlay)
         ClientRegistry.registerKeyBinding(this.openConfigGui)
+
         if (IS_DEBUGGING) {
             this.debugKey = KeyBinding("DEBUG KEY", Keyboard.KEY_J, KEY_CATEGORY)
             ClientRegistry.registerKeyBinding(this.debugKey)
@@ -207,6 +209,7 @@ class HudPixelMod {
                 if (!didTheThings && Minecraft.getMinecraft().thePlayer != null) {
 
                     Connect.setup()
+
 
                     createModList()
                     var s = ""

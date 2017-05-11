@@ -37,10 +37,21 @@ public abstract class Container extends ChildRegistry implements IContainer, ICh
     private int yOffset = 0;
 
     private boolean isHover = false;
-    private boolean visible = true; 
+    private boolean visible = true;
+    private boolean isRenderBackground = true;
 
-    private ContainerSide border = new ContainerSide();
-    private ContainerSide margin = new ContainerSide();
+    private Container parent = null;
+
+    private void setParent(Container con){
+        this.parent = con;
+    }
+
+    public Container getParent() {
+        return parent;
+    }
+
+    private ContainerSide border  = new ContainerSide();
+    private ContainerSide margin  = new ContainerSide();
     private ContainerSide padding = new ContainerSide();
 
     private ColorRGBA borderRGBA = RGBA.TRANSPARENT.get();
@@ -96,6 +107,19 @@ public abstract class Container extends ChildRegistry implements IContainer, ICh
 
     //METHODS ----------------------------------------------------------------------------------------------------------
 
+
+    @Override
+    public <T extends IChild> void registerChild(T child) {
+        if(child instanceof  Container) ((Container) child).setParent(null);
+        super.registerChild(child);
+    }
+
+    @Override
+    public void unregisterChild(IChild child) {
+        if(child instanceof  Container) ((Container) child).setParent(this);
+        super.unregisterChild(child);
+    }
+
     public boolean checkIfMouseOver(int xStart, int yStart, int width, int height) {
         int mX = MouseHandler.INSTANCE.getMX();
         int mY = MouseHandler.INSTANCE.getMY();
@@ -140,7 +164,7 @@ public abstract class Container extends ChildRegistry implements IContainer, ICh
 
         if (!doRenderTickLocal(this.xStart, this.yStart, width, height, EnumEventState.PRE)) return false;
 
-        RenderHelper.INSTANCE.renderContainer(this);
+        if(isRenderBackground) RenderHelper.INSTANCE.renderContainer(this);
 
         return doRenderTickLocal(this.xStart, this.yStart, width, height, EnumEventState.POST);
     }
@@ -325,6 +349,10 @@ public abstract class Container extends ChildRegistry implements IContainer, ICh
         return minWidth;
     }
 
+    public boolean isRenderBackground() {
+        return isRenderBackground;
+    }
+
     //SETTER -----------------------------------------------------------------------------------------------------------
 
     @Override
@@ -335,11 +363,13 @@ public abstract class Container extends ChildRegistry implements IContainer, ICh
     @Override
     public void setHeight(int height) {
         this.height = height;
+        //onResize();
     }
 
     @Override
     public void setWidth(int width) {
         this.width = width;
+        //onResize();
     }
 
     @Override
@@ -409,5 +439,9 @@ public abstract class Container extends ChildRegistry implements IContainer, ICh
 
     public void setMinWidth(int minWidth) {
         this.minWidth = minWidth;
+    }
+
+    public void setIsRenderBackground(boolean value){
+        isRenderBackground = value;
     }
 }

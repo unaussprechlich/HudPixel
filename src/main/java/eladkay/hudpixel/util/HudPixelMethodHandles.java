@@ -49,11 +49,13 @@ package eladkay.hudpixel.util;
 import com.google.common.base.Throwables;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreenBook;
+import net.minecraft.client.resources.ResourcePackRepository;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import javax.annotation.Nonnull;
+import java.io.File;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
@@ -72,6 +74,9 @@ public class HudPixelMethodHandles {
     //@Nonnull
     //private static final MethodHandle rightClickDelayTimer;
 
+    @Nonnull
+    private static final MethodHandle dirServerResourcepacks;
+
     static {
         try {
             Field bookP = ReflectionHelper.findField(GuiScreenBook.class, "field_146483_y", "bookPages", "y");
@@ -79,7 +84,6 @@ public class HudPixelMethodHandles {
             Field entityF = ReflectionHelper.findField(Entity.class, "field_70178_ae", "isImmuneToFire", "ab");
             entityImmuneToFire = publicLookup().unreflectSetter(entityF);
             //test
-
             //TODO: FIX THIS, THROWS ERROR
             //Field rightC = ReflectionHelper.findField(Minecraft.class, "rightClickDelayTimer");
             //rightClickDelayTimer = publicLookup().unreflectSetter(rightC);
@@ -93,6 +97,14 @@ public class HudPixelMethodHandles {
     public static NBTTagList getBookPages(GuiScreenBook book) {
         try {
             return (NBTTagList) bookPages.invokeExact(book);
+        } catch (Throwable t) {
+            throw propagate(t);
+        }
+    }
+
+    public static File getRPP(ResourcePackRepository repo) {
+        try {
+            return (File) dirServerResourcepacks.invokeExact(repo);
         } catch (Throwable t) {
             throw propagate(t);
         }
