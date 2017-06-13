@@ -76,12 +76,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent
 import net.unaussprechlich.hudpixelextended.HudPixelExtended
+import net.unaussprechlich.hudpixelextended.hypixelapi.ApiManager
 import net.unaussprechlich.hudpixelextended.update.UpdateNotifier
 import net.unaussprechlich.project.connect.Connect
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.lwjgl.input.Keyboard
-import java.util.*
 
 
 @Mod(modid = HudPixelMod.MODID, version = HudPixelMod.SHORT_VERSION, name = HudPixelMod.NAME, guiFactory = "eladkay.hudpixel.config.HudPixelGuiFactory", acceptedMinecraftVersions = "1.8.9")
@@ -175,6 +175,11 @@ class HudPixelMod {
         }
     }
 
+    fun setupOncePlayerNotNull(){
+        Connect.setup()
+        ApiManager.getINSTANCE().setup()
+    }
+
     @EventHandler
     fun onPostInit(event: FMLPostInitializationEvent) {
         HudPixelExtended.getInstance().setupPOST()
@@ -207,17 +212,8 @@ class HudPixelMod {
                 //Send info to remote server
                 //NOTE: THIS DOES NOT SEND ANY SESSION KEYS OR PERSONALLY IDENTIFIER INFORMATION!
                 if (!didTheThings && Minecraft.getMinecraft().thePlayer != null) {
-
-                    Connect.setup()
-
-
-                    createModList()
-                    var s = ""
-                    for (st in modlist) s += st.replace(" ", "-") + ","
-                    WebUtil.sendGet("HudPixelMod", IP + "?username=" + Minecraft.getMinecraft().thePlayer.name +
-                            "&modlist=" + s + "&timestamp=" + Date().toString().replace(" ", "") + "&uuid=" +
-                            Minecraft.getMinecraft().thePlayer.gameProfile.id + "&version=" + DEFAULT_VERSION.replace(" ", ""))
                     didTheThings = true
+                    setupOncePlayerNotNull()
                 }
             }
         } catch (e: Exception) {
